@@ -2,10 +2,25 @@ package org.example.model;
 
 import org.example.ChessBoard;
 
-public class Horse extends ChessPiece {
+import static org.example.model.Color.EMPTY;
 
-    public Horse(String color) {
-        super(color);
+/**
+ * Пустая шахматная ячейка.
+ */
+public class EmptyCell extends ChessPiece {
+
+    private static EmptyCell INSTANCE;
+
+    private EmptyCell(Color color) {
+        super(color, PieceType.EMPTY_CELL);
+    }
+
+    public static EmptyCell getInstance() {
+        if(INSTANCE == null) {
+            INSTANCE = new EmptyCell(EMPTY);
+        }
+
+        return INSTANCE;
     }
 
     /**
@@ -21,10 +36,5 @@ public class Horse extends ChessPiece {
     @Override
     public boolean canMoveToPosition(ChessBoard chessBoard, int line, int column, int toLine, int toColumn) {
         return false;
-    }
-
-    @Override
-    public String getSymbol() {
-        return "H";
     }
 }

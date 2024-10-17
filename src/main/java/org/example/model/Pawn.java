@@ -2,10 +2,10 @@ package org.example.model;
 
 import org.example.ChessBoard;
 
-public class Horse extends ChessPiece {
+public class Pawn extends ChessPiece {
 
-    public Horse(String color) {
-        super(color);
+    public Pawn(Color color) {
+        super(color, PieceType.PAWN);
     }
 
     /**
@@ -20,11 +20,40 @@ public class Horse extends ChessPiece {
      */
     @Override
     public boolean canMoveToPosition(ChessBoard chessBoard, int line, int column, int toLine, int toColumn) {
-        return false;
-    }
-
-    @Override
-    public String getSymbol() {
-        return "H";
+        if (!super.checkAvailable(toLine, toColumn)) return false;
+        ChessPiece other = chessBoard.getChessByCoordinates(toLine, toColumn);
+        boolean otherEmpty = super.emptyCheck(other);
+        boolean otherEnemy = super.enemyCheck(other);
+        if (this.color.equals(Color.WHITE)) {
+            if (line + 1 == toLine && column == toColumn && otherEmpty) {
+                super.doFirstMove();
+                return true;
+            } else if (line + 1 == toLine && (column == toColumn + 1 || column == toColumn - 1) && otherEnemy) {
+                chessBoard.addDestroyedPiece(other);
+                super.doFirstMove();
+                return true;
+            } else if (line + 2 == toLine && column == toColumn && super.hasFirstMove && otherEmpty
+                    && super.emptyCheck(chessBoard.getChessByCoordinates(line + 1, column))) {
+                super.doFirstMove();
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (line - 1 == toLine && column == toColumn && otherEmpty) {
+                super.doFirstMove();
+                return true;
+            } else if (line - 1 == toLine && (column == toColumn + 1 || column == toColumn - 1) && otherEnemy) {
+                chessBoard.addDestroyedPiece(other);
+                super.doFirstMove();
+                return true;
+            } else if (line - 2 == toLine && column == toColumn && super.hasFirstMove && otherEmpty
+                    && super.emptyCheck(chessBoard.getChessByCoordinates(line - 1, column))) {
+                super.doFirstMove();
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 }

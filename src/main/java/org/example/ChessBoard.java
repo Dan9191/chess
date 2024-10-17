@@ -1,26 +1,81 @@
 package org.example;
 
-public class ChessBoard {
-    public ChessPiece[][] board = new ChessPiece[8][8]; // creating a field for game
-    String nowPlayer;
+import org.example.model.*;
 
-    public ChessBoard(String nowPlayer) {
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.example.model.Color.BLACK;
+import static org.example.model.Color.WHITE;
+import static org.example.model.PieceType.KING;
+
+public class ChessBoard {
+    private ChessPiece[][] board = new ChessPiece[8][8]; // creating a field for game
+    private Color nowPlayer;
+
+    private List<ChessPiece> destroyedPieces = new ArrayList<>();
+
+    public ChessBoard(Color nowPlayer) {
         this.nowPlayer = nowPlayer;
+        this.board[0][0] = new Rook(WHITE);
+        this.board[0][1] = new Horse(WHITE);
+        this.board[0][2] = new Bishop(WHITE);
+        this.board[0][3] = new Queen(WHITE);
+        this.board[0][4] = new King(WHITE);
+        this.board[0][5] = new Bishop(WHITE);
+        this.board[0][6] = new Horse(WHITE);
+        this.board[0][7] = new Rook(WHITE);
+        this.board[1][0] = new Pawn(WHITE);
+        this.board[1][1] = new Pawn(WHITE);
+        this.board[1][2] = new Pawn(WHITE);
+        this.board[1][3] = new Pawn(WHITE);
+        this.board[1][4] = new Pawn(WHITE);
+        this.board[1][5] = new Pawn(WHITE);
+        this.board[1][6] = new Pawn(WHITE);
+        this.board[1][7] = new Pawn(WHITE);
+
+        this.board[7][0] = new Rook(BLACK);
+        this.board[7][1] = new Horse(BLACK);
+        this.board[7][2] = new Bishop(BLACK);
+        this.board[7][3] = new Queen(BLACK);
+        this.board[7][4] = new King(BLACK);
+        this.board[7][5] = new Bishop(BLACK);
+        this.board[7][6] = new Horse(BLACK);
+        this.board[7][7] = new Rook(BLACK);
+        this.board[6][0] = new Pawn(BLACK);
+        //this.board[6][0] = new Pawn(WHITE);
+        this.board[6][1] = new Pawn(BLACK);
+        this.board[6][2] = new Pawn(BLACK);
+        this.board[6][3] = new Pawn(BLACK);
+        this.board[6][4] = new Pawn(BLACK);
+        this.board[6][5] = new Pawn(BLACK);
+        this.board[6][6] = new Pawn(BLACK);
+        this.board[6][7] = new Pawn(BLACK);
+
+        for (int i = 7; i > -1; i--) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] == null) {
+                    board[i][j] = EmptyCell.getInstance();
+                }
+            }
+        }
     }
 
-    public String nowPlayerColor() {
+    public Color nowPlayerColor() {
         return this.nowPlayer;
     }
 
     public boolean moveToPosition(int startLine, int startColumn, int endLine, int endColumn) {
-        if (checkPos(startLine) && checkPos(startColumn)) {
+        if (validatePosition(startLine) && validatePosition(startColumn)) {
 
-            if (!nowPlayer.equals(board[startLine][startColumn].getColor())) return false;
+            if (!nowPlayer.equals(board[startLine][startColumn].getColor())) {
+                return false;
+            }
 
             if (board[startLine][startColumn].canMoveToPosition(this, startLine, startColumn, endLine, endColumn)) {
                 board[endLine][endColumn] = board[startLine][startColumn]; // if piece can move, we moved a piece
-                board[startLine][startColumn] = null; // set null to previous cell
-                this.nowPlayer = this.nowPlayerColor().equals("White") ? "Black" : "White";
+                board[startLine][startColumn] = EmptyCell.getInstance();
+                this.nowPlayer = this.nowPlayerColor().equals(WHITE) ? BLACK : WHITE;
 
                 return true;
             } else return false;
@@ -37,11 +92,7 @@ public class ChessBoard {
         for (int i = 7; i > -1; i--) {
             System.out.print(i + "\t");
             for (int j = 0; j < 8; j++) {
-                if (board[i][j] == null) {
-                    System.out.print(".." + "\t");
-                } else {
-                    System.out.print(board[i][j].getSymbol() + board[i][j].getColor().substring(0, 1).toLowerCase() + "\t");
-                }
+                System.out.print(board[i][j].toBoardPrint() + "\t");
             }
             System.out.println();
             System.out.println();
@@ -49,7 +100,49 @@ public class ChessBoard {
         System.out.println("Player 1(White)");
     }
 
-    public boolean checkPos(int pos) {
+    public boolean validatePosition(int pos) {
         return pos >= 0 && pos <= 7;
+    }
+
+    public ChessPiece checkPosition(int line, int column) {
+        if (line < 0 || line > 7 || column < 0 || column > 7) {
+            return UnavailableCell.getInstance();
+        } else {
+            return board[line][column];
+        }
+    }
+
+    public boolean castling0() {
+        return false;
+    }
+
+    public boolean castling7() {
+        return false;
+    }
+
+    public void addDestroyedPiece(ChessPiece piece) {
+        this.destroyedPieces.add(piece);
+        if (piece.getPieceType().equals(KING)) gameEnd();
+    }
+
+    public String infoDestroyedPiece() {
+        return this.destroyedPieces.toString();
+    }
+
+    private void gameEnd() {
+        System.out.println("Король убит, игра законченна");
+        // todo
+    }
+
+    public ChessPiece getChessByCoordinates(int line, int column) {
+        if (line < 0 || line > 7 || column < 0 || column > 7) {
+            return UnavailableCell.getInstance();
+        } else {
+            return board[line][column];
+        }
+    }
+
+    public List<ChessPiece> checkKing() {
+        return null;
     }
 }
