@@ -3,6 +3,7 @@ package org.example;
 import org.example.model.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.example.model.Color.BLACK;
@@ -143,6 +144,20 @@ public class ChessBoard {
     }
 
     public List<ChessPiece> checkKing() {
-        return null;
+        King currentKing = null;
+        int line = 0;
+        int column = 0;
+        for (int i = 7; i > -1; i--) {
+            for (int j = 0; j < 8; j++) {
+                ChessPiece piece = board[i][j];
+                if (piece.getPieceType().equals(KING) && piece.getColor().equals(nowPlayer)) {
+                    line = i;
+                    column = j;
+                    currentKing = (King) piece;
+                }
+            }
+        }
+        assert currentKing != null;
+        return currentKing.isUnderAttack(this, line, column);
     }
 }

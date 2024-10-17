@@ -6,7 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class King extends ChessPiece {
+import static org.example.util.Constants.IS_BLACK_PAWN;
+import static org.example.util.Constants.IS_PAWN_OR_KING;
+import static org.example.util.Constants.IS_WHITE_PAWN;
+
+public class
+King extends ChessPiece {
 
     public King(Color color) {
         super(color, PieceType.KING);
@@ -20,12 +25,12 @@ public class King extends ChessPiece {
     /**
      * Можно ли сходить.
      *
-     * @param chessBoard
-     * @param line     начальная координата линия.
-     * @param column   начальная коодрината столбец.
-     * @param toLine   координата для перемещения по линии.
-     * @param toColumn координата для перемещения по столбцу.
-     * @return
+     * @param chessBoard шахматная доска.
+     * @param line       начальная координата линия.
+     * @param column     начальная координата столбец.
+     * @param toLine     координата для перемещения по линии.
+     * @param toColumn   координата для перемещения по столбцу.
+     * @return Можно ли сходить.
      */
     @Override
     public boolean canMoveToPosition(ChessBoard chessBoard, int line, int column, int toLine, int toColumn) {
@@ -39,9 +44,11 @@ public class King extends ChessPiece {
         ChessPiece other = chessBoard.getChessByCoordinates(toLine, toColumn);
         boolean otherEmpty = super.emptyCheck(other);
         boolean otherEnemy = super.enemyCheck(other);
-        boolean nextStepUnderAttack = isUnderAttack(chessBoard, toLine, toColumn);
+        List<ChessPiece> nextStepUnderAttackList = isUnderAttack(chessBoard, toLine, toColumn);
         if (otherEmpty || otherEnemy) {
-            if (nextStepUnderAttack) {
+            if (!nextStepUnderAttackList.isEmpty()) {
+                System.out.println("Король находится под атакой:");
+                System.out.println(nextStepUnderAttackList.stream().map(ChessPiece::toString).collect(Collectors.joining(", ")));
                 return false;
             } else {
                 if (otherEnemy) chessBoard.addDestroyedPiece(other);
@@ -55,26 +62,19 @@ public class King extends ChessPiece {
     }
 
     /**
-     * Находится ли под атакой Король или поле, куда он собирается идти.
+     * Список фигур, которые могут атаковать короля.
      *
-     * @param board
-     * @param line
-     * @param column
-     * @return
+     * @param board  Шахматная доска.
+     * @param line   Координата линии.
+     * @param column Координата столбца.
+     * @return список атакующих фигур.
      */
-    public boolean isUnderAttack(ChessBoard board, int line, int column) {
+    public List<ChessPiece> isUnderAttack(ChessBoard board, int line, int column) {
         List<ChessPiece> enemy = new ArrayList<>();
         enemy.addAll(getEnemyHorse(board, line, column));
         enemy.addAll(getByVerticalAndHorizontal(board, line, column));
         enemy.addAll(getByDiagonally(board, line, column));
-        if (enemy.isEmpty()) {
-            return false;
-        } else {
-            System.out.println("Король находится под атакой:");
-            System.out.println(enemy.stream().map(ChessPiece::toString).collect(Collectors.joining(" ,")));
-            // todo добавить координаты фигурам?
-            return true;
-        }
+        return enemy;
     }
 
 
@@ -170,8 +170,6 @@ public class King extends ChessPiece {
 
     private List<ChessPiece> getByDiagonally(ChessBoard board, int line, int column) {
         Color enemyColor = this.color.equals(Color.WHITE) ? Color.BLACK : Color.WHITE;
-
-        // TODO ДОЛЖЕН УЧИТЫВАТЬСЯ ЦВЕТ ПЕШКИ!
         List<ChessPiece> pieces = new ArrayList<>(4);
         boolean topRight = true;
         boolean downRight = true;
@@ -185,18 +183,16 @@ public class King extends ChessPiece {
             currentColumn++;
             ChessPiece piece = board.getChessByCoordinates(currentLine, currentColumn);
             if (!piece.getPieceType().equals(PieceType.EMPTY_CELL)) {
-                if (piece.getPieceType().equals(PieceType.KING)
-                || piece.getPieceType().equals(PieceType.PAWN)) {
+                if (IS_PAWN_OR_KING.test(piece)) {
                     if (currentLine == line + 1 && currentColumn == column + 1) {
-                        pieces.add(piece);
-                        topRight = false;
-                    } else {
-                        topRight = false;
+                        if ((this.color.equals(Color.WHITE) && IS_BLACK_PAWN.test(piece)) || piece.getPieceType().equals(PieceType.KING)) {
+                            pieces.add(piece);
+                        }
                     }
                 } else {
                     pieces.add(piece);
-                    topRight = false;
                 }
+                topRight = false;
             }
         }
 
@@ -208,18 +204,17 @@ public class King extends ChessPiece {
             currentColumn++;
             ChessPiece piece = board.getChessByCoordinates(currentLine, currentColumn);
             if (!piece.getPieceType().equals(PieceType.EMPTY_CELL)) {
-                if (piece.getPieceType().equals(PieceType.KING)
-                        || piece.getPieceType().equals(PieceType.PAWN)) {
-                    if (currentLine == line - 1 && currentColumn == column + 1) {
-                        pieces.add(piece);
-                        downRight = false;
-                    } else {
-                        downRight = false;
+                if (IS_PAWN_OR_KING.test(piece)) {
+                    if (currentLine == line -1 && currentColumn == column + 1) {
+                        if ((this.color.equals(Color.BLACK) && IS_WHITE_PAWN.test(piece))
+                                || piece.getPieceType().equals(PieceType.KING)) {
+                            pieces.add(piece);
+                        }
                     }
                 } else {
                     pieces.add(piece);
-                    downRight = false;
                 }
+                downRight = false;
             }
         }
 
@@ -230,18 +225,17 @@ public class King extends ChessPiece {
             currentColumn--;
             ChessPiece piece = board.getChessByCoordinates(currentLine, currentColumn);
             if (!piece.getPieceType().equals(PieceType.EMPTY_CELL)) {
-                if (piece.getPieceType().equals(PieceType.KING)
-                        || piece.getPieceType().equals(PieceType.PAWN)) {
-                    if (currentLine == line - 1 && currentColumn == column - 1) {
-                        pieces.add(piece);
-                        downLeft = false;
-                    } else {
-                        downLeft = false;
+                if (IS_PAWN_OR_KING.test(piece)) {
+                    if (currentLine == line -1 && currentColumn == column - 1) {
+                        if ((this.color.equals(Color.BLACK) && IS_WHITE_PAWN.test(piece))
+                                || piece.getPieceType().equals(PieceType.KING)) {
+                            pieces.add(piece);
+                        }
                     }
                 } else {
                     pieces.add(piece);
-                    downLeft = false;
                 }
+                downLeft = false;
             }
         }
 
@@ -252,18 +246,17 @@ public class King extends ChessPiece {
             currentColumn--;
             ChessPiece piece = board.getChessByCoordinates(currentLine, currentColumn);
             if (!piece.getPieceType().equals(PieceType.EMPTY_CELL)) {
-                if (piece.getPieceType().equals(PieceType.KING)
-                        || piece.getPieceType().equals(PieceType.PAWN)) {
+                if (IS_PAWN_OR_KING.test(piece)) {
                     if (currentLine == line + 1 && currentColumn == column - 1) {
-                        pieces.add(piece);
-                        topLeft = false;
-                    } else {
-                        topLeft = false;
+                        if ((this.color.equals(Color.WHITE) && IS_BLACK_PAWN.test(piece))
+                                || piece.getPieceType().equals(PieceType.KING)) {
+                            pieces.add(piece);
+                        }
                     }
                 } else {
                     pieces.add(piece);
-                    topLeft = false;
                 }
+                topLeft = false;
             }
         }
         return pieces.stream()
