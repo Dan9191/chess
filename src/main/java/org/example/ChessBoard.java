@@ -3,12 +3,17 @@ package org.example;
 import org.example.model.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import static java.util.stream.Collectors.joining;
 import static org.example.model.Color.BLACK;
 import static org.example.model.Color.WHITE;
+import static org.example.model.PieceType.EMPTY_CELL;
 import static org.example.model.PieceType.KING;
+import static org.example.util.Constants.BLACK_KING_CAN_DO_LEFT_CASTLING;
+import static org.example.util.Constants.BLACK_KING_CAN_DO_RIGHT_CASTLING;
+import static org.example.util.Constants.WHITE_KING_CAN_DO_LEFT_CASTLING;
+import static org.example.util.Constants.WHITE_KING_CAN_DO_RIGHT_CASTLING;
 
 public class ChessBoard {
     private ChessPiece[][] board = new ChessPiece[8][8]; // creating a field for game
@@ -74,11 +79,24 @@ public class ChessBoard {
             }
 
             if (board[startLine][startColumn].canMoveToPosition(this, startLine, startColumn, endLine, endColumn)) {
+                ChessPiece deletedChess = board[endLine][endColumn]; // удаляемая фигура
                 board[endLine][endColumn] = board[startLine][startColumn]; // if piece can move, we moved a piece
                 board[startLine][startColumn] = EmptyCell.getInstance();
-                this.nowPlayer = this.nowPlayerColor().equals(WHITE) ? BLACK : WHITE;
 
-                return true;
+                List<ChessPiece> checkKing = checkKing();
+                if (checkKing.isEmpty()) {
+                    this.nowPlayer = this.nowPlayerColor().equals(WHITE) ? BLACK : WHITE;
+                    return true;
+                } else {
+                    // если в конце хода текущий король под атакой, то возвращаем все на место
+                    System.out.println("Король " + nowPlayer + " под атакой");
+                    System.out.println("Список фигур: "
+                            + checkKing.stream().map(ChessPiece::toString).collect(joining(", ")));
+                    board[startLine][startColumn] = board[endLine][endColumn];
+                    board[endLine][endColumn] = deletedChess;
+                    return false;
+                }
+
             } else return false;
         } else return false;
     }
@@ -99,31 +117,79 @@ public class ChessBoard {
             System.out.println();
         }
         System.out.println("Player 1(White)");
+
+        List<ChessPiece> checkKing = checkKing();
+        if (!checkKing.isEmpty()) {
+            System.out.println("Король " + nowPlayer + " под атакой");
+            System.out.println("Список фигур: "
+                    + checkKing.stream().map(ChessPiece::toString).collect(joining(", ")));
+        }
+
     }
 
     public boolean validatePosition(int pos) {
         return pos >= 0 && pos <= 7;
     }
 
-    public ChessPiece checkPosition(int line, int column) {
-        if (line < 0 || line > 7 || column < 0 || column > 7) {
-            return UnavailableCell.getInstance();
+    public boolean castling0() {
+        if (nowPlayer.equals(WHITE)) {
+            if (WHITE_KING_CAN_DO_LEFT_CASTLING.test(this)) {
+                board[0][0] = EmptyCell.getInstance();
+                board[0][4] = EmptyCell.getInstance();
+                board[0][2] = new King(WHITE);
+                board[0][2].doFirstMove();
+                board[0][3] = new Rook(WHITE);
+                board[0][3].doFirstMove();
+                nowPlayer = BLACK;
+                return true;
+            } else return false;
         } else {
-            return board[line][column];
+            if (BLACK_KING_CAN_DO_LEFT_CASTLING.test(this)) {
+                board[7][0] = EmptyCell.getInstance();
+                board[7][4] = EmptyCell.getInstance();
+                board[7][2] = new King(BLACK);
+                board[7][2].doFirstMove();
+                board[7][3] = new Rook(BLACK);
+                board[7][3].doFirstMove();
+                nowPlayer = WHITE;
+                return true;
+            } else return false;
         }
     }
 
-    public boolean castling0() {
-        return false;
-    }
-
     public boolean castling7() {
-        return false;
+        if (nowPlayer.equals(WHITE)) {
+            if (WHITE_KING_CAN_DO_RIGHT_CASTLING.test(this)) {
+                board[0][7] = EmptyCell.getInstance();
+                board[0][4] = EmptyCell.getInstance();
+                board[0][6] = new King(WHITE);
+                board[0][6].doFirstMove();
+                board[0][5] = new Rook(WHITE);
+                board[0][5].doFirstMove();
+                nowPlayer = BLACK;
+                return true;
+            } else return false;
+        } else {
+            if (BLACK_KING_CAN_DO_RIGHT_CASTLING.test(this)) {
+                board[7][7] = EmptyCell.getInstance();
+                board[7][7] = EmptyCell.getInstance();
+                board[7][6] = new King(BLACK);
+                board[7][6].doFirstMove();
+                board[7][5] = new Rook(BLACK);
+                board[7][5].doFirstMove();
+                nowPlayer = WHITE;
+                return true;
+            } else return false;
+        }
     }
 
     public void addDestroyedPiece(ChessPiece piece) {
+        if (piece.getPieceType().equals(KING)) {
+            Color winnerColor = piece.getColor().equals(WHITE) ? BLACK : WHITE;
+            System.out.println("Поздравляем " + winnerColor + " С победой!");
+            gameEnd();
+        }
         this.destroyedPieces.add(piece);
-        if (piece.getPieceType().equals(KING)) gameEnd();
     }
 
     public String infoDestroyedPiece() {
@@ -158,6 +224,6 @@ public class ChessBoard {
             }
         }
         assert currentKing != null;
-        return currentKing.isUnderAttack(this, line, column);
+        return currentKing.isUnderAttackList(this, line, column);
     }
 }

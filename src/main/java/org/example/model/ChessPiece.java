@@ -5,10 +5,11 @@ import org.example.ChessBoard;
 import java.util.List;
 
 public abstract class ChessPiece {
+
     Color color;
 
     PieceType pieceType;
-    boolean hasFirstMove = true;
+    private boolean hasFirstMove = true;
 
     public ChessPiece(Color color, PieceType pieceType) {
         this.color = color;
@@ -39,6 +40,10 @@ public abstract class ChessPiece {
         }
     }
 
+    public boolean isHasFirstMove() {
+        return hasFirstMove;
+    }
+
     public String toString() {
         return pieceType + " " + color + " " +hasFirstMove;
     }
@@ -64,5 +69,4 @@ public abstract class ChessPiece {
         return others.stream().allMatch(it -> it.pieceType.equals(PieceType.EMPTY_CELL));
     }
 
-    //todo нельзя ходить на самого себя
 }

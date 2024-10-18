@@ -32,7 +32,7 @@ public class Pawn extends ChessPiece {
                 chessBoard.addDestroyedPiece(other);
                 super.doFirstMove();
                 return true;
-            } else if (line + 2 == toLine && column == toColumn && super.hasFirstMove && otherEmpty
+            } else if (line + 2 == toLine && column == toColumn && super.isHasFirstMove() && otherEmpty
                     && super.emptyCheck(chessBoard.getChessByCoordinates(line + 1, column))) {
                 super.doFirstMove();
                 return true;
@@ -47,7 +47,7 @@ public class Pawn extends ChessPiece {
                 chessBoard.addDestroyedPiece(other);
                 super.doFirstMove();
                 return true;
-            } else if (line - 2 == toLine && column == toColumn && super.hasFirstMove && otherEmpty
+            } else if (line - 2 == toLine && column == toColumn && super.isHasFirstMove() && otherEmpty
                     && super.emptyCheck(chessBoard.getChessByCoordinates(line - 1, column))) {
                 super.doFirstMove();
                 return true;

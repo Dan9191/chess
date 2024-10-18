@@ -44,7 +44,7 @@ King extends ChessPiece {
         ChessPiece other = chessBoard.getChessByCoordinates(toLine, toColumn);
         boolean otherEmpty = super.emptyCheck(other);
         boolean otherEnemy = super.enemyCheck(other);
-        List<ChessPiece> nextStepUnderAttackList = isUnderAttack(chessBoard, toLine, toColumn);
+        List<ChessPiece> nextStepUnderAttackList = isUnderAttackList(chessBoard, toLine, toColumn);
         if (otherEmpty || otherEnemy) {
             if (!nextStepUnderAttackList.isEmpty()) {
                 System.out.println("Король находится под атакой:");
@@ -69,12 +69,20 @@ King extends ChessPiece {
      * @param column Координата столбца.
      * @return список атакующих фигур.
      */
-    public List<ChessPiece> isUnderAttack(ChessBoard board, int line, int column) {
+    public List<ChessPiece> isUnderAttackList(ChessBoard board, int line, int column) {
         List<ChessPiece> enemy = new ArrayList<>();
         enemy.addAll(getEnemyHorse(board, line, column));
         enemy.addAll(getByVerticalAndHorizontal(board, line, column));
         enemy.addAll(getByDiagonally(board, line, column));
         return enemy;
+    }
+
+    public boolean isUnderAttack(ChessBoard board, int line, int column) {
+        List<ChessPiece> enemy = new ArrayList<>();
+        enemy.addAll(getEnemyHorse(board, line, column));
+        enemy.addAll(getByVerticalAndHorizontal(board, line, column));
+        enemy.addAll(getByDiagonally(board, line, column));
+        return enemy.isEmpty();
     }
 
 
