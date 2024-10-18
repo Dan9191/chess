@@ -155,7 +155,7 @@ King extends ChessPiece {
             }
         }
         for (int i = column - 1; i > 0; i--) {
-            ChessPiece upPiece = board.getChessByCoordinates(i, column);
+            ChessPiece upPiece = board.getChessByCoordinates(line, i);
             if (!upPiece.getPieceType().equals(PieceType.EMPTY_CELL)) {
                 if (upPiece.getPieceType().equals(PieceType.KING)) {
                     if (i == column - 1) {

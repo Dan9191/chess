@@ -29,6 +29,7 @@ public class ChessBoard {
         this.board[0][3] = new Queen(WHITE);
         this.board[0][4] = new King(WHITE);
         this.board[0][5] = new Bishop(WHITE);
+       // this.board[0][5] = EmptyCell.getInstance();
         this.board[0][6] = new Horse(WHITE);
         this.board[0][7] = new Rook(WHITE);
         this.board[1][0] = new Pawn(WHITE);
@@ -36,6 +37,7 @@ public class ChessBoard {
         this.board[1][2] = new Pawn(WHITE);
         this.board[1][3] = new Pawn(WHITE);
         this.board[1][4] = new Pawn(WHITE);
+        //  this.board[1][4] = EmptyCell.getInstance();
         this.board[1][5] = new Pawn(WHITE);
         this.board[1][6] = new Pawn(WHITE);
         this.board[1][7] = new Pawn(WHITE);
@@ -49,7 +51,6 @@ public class ChessBoard {
         this.board[7][6] = new Horse(BLACK);
         this.board[7][7] = new Rook(BLACK);
         this.board[6][0] = new Pawn(BLACK);
-        //this.board[6][0] = new Pawn(WHITE);
         this.board[6][1] = new Pawn(BLACK);
         this.board[6][2] = new Pawn(BLACK);
         this.board[6][3] = new Pawn(BLACK);
