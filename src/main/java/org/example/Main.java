@@ -32,7 +32,7 @@ public class Main {
                 System.out.println("Заново");
                 board = buildBoard();
                 board.printBoard();
-            } else if (s.equals("give up'")) {
+            } else if (s.equals("give up")) {
                 System.out.println("Поздравляем! победил игрок : "
                         + (board.nowPlayerColor().equals(WHITE) ? BLACK : WHITE));
             } else {
