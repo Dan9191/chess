@@ -17,12 +17,12 @@ public class Bishop extends ChessPiece {
     /**
      * Можно ли сходить.
      *
-     * @param chessBoard
-     * @param line     начальная координата линия.
-     * @param column   начальная коодрината столбец.
-     * @param toLine   координата для перемещения по линии.
-     * @param toColumn координата для перемещения по столбцу.
-     * @return
+     * @param chessBoard Шахматная доска.
+     * @param line       Начальная координата линия.
+     * @param column     Начальная координата столбец.
+     * @param toLine     Координата для перемещения по линии.
+     * @param toColumn   Координата для перемещения по столбцу.
+     * @return разрешено ли перемещение.
      */
     @Override
     public boolean canMoveToPosition(ChessBoard chessBoard, int line, int column, int toLine, int toColumn) {

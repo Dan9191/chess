@@ -8,17 +8,32 @@ import org.example.model.PieceType;
 
 import java.util.function.Predicate;
 
+/**
+ * Утилитный класс для хранения констант.
+ */
 public class Constants {
 
+    /**
+     * Проверка на черную пешку.
+     */
     public static Predicate<ChessPiece> IS_BLACK_PAWN = piece ->
             piece.getPieceType().equals(PieceType.PAWN) && piece.getColor().equals(Color.BLACK);
 
+    /**
+     * Проверка на белую пешку.
+     */
     public static Predicate<ChessPiece> IS_WHITE_PAWN = piece ->
             piece.getPieceType().equals(PieceType.PAWN) && piece.getColor().equals(Color.WHITE);
 
+    /**
+     * Проверка на короля или пешку.
+     */
     public static Predicate<ChessPiece> IS_PAWN_OR_KING = piece ->
             piece.getPieceType().equals(PieceType.KING) || piece.getPieceType().equals(PieceType.PAWN);
 
+    /**
+     * Проверка на левую рокировку для белого короля.
+     */
     public static Predicate<ChessBoard> WHITE_KING_CAN_DO_LEFT_CASTLING = board -> {
         ChessPiece supposedlyKing = board.getChessByCoordinates(0, 4);
         ChessPiece supposedlyRook = board.getChessByCoordinates(0, 0);
@@ -34,6 +49,9 @@ public class Constants {
                 && board.getChessByCoordinates(0, 3).getPieceType().equals(PieceType.EMPTY_CELL);
     };
 
+    /**
+     * Проверка на левую рокировку для черного короля.
+     */
     public static Predicate<ChessBoard> BLACK_KING_CAN_DO_LEFT_CASTLING = board -> {
         ChessPiece supposedlyKing = board.getChessByCoordinates(7, 4);
         ChessPiece supposedlyRook = board.getChessByCoordinates(7, 0);
@@ -49,7 +67,9 @@ public class Constants {
                 && board.getChessByCoordinates(7, 3).getPieceType().equals(PieceType.EMPTY_CELL);
     };
 
-
+    /**
+     * Проверка на правую рокировку для белого короля.
+     */
     public static Predicate<ChessBoard> WHITE_KING_CAN_DO_RIGHT_CASTLING = board -> {
         ChessPiece supposedlyKing = board.getChessByCoordinates(0, 4);
         ChessPiece supposedlyRook = board.getChessByCoordinates(0, 7);
@@ -64,6 +84,9 @@ public class Constants {
                 && board.getChessByCoordinates(0, 6).getPieceType().equals(PieceType.EMPTY_CELL);
     };
 
+    /**
+     * Проверка на правую рокировку для черного короля.
+     */
     public static Predicate<ChessBoard> BLACK_KING_CAN_DO_RIGHT_CASTLING = board -> {
         ChessPiece supposedlyKing = board.getChessByCoordinates(7, 4);
         ChessPiece supposedlyRook = board.getChessByCoordinates(7, 7);

@@ -4,6 +4,9 @@ import org.example.ChessBoard;
 
 import java.util.List;
 
+/**
+ * Абстрактный класс для шахматных фигур.
+ */
 public abstract class ChessPiece {
 
     Color color;
@@ -24,15 +27,17 @@ public abstract class ChessPiece {
         return this.pieceType;
     }
 
+    /**
+     * Можно ли сходить.
+     *
+     * @param chessBoard Шахматная доска.
+     * @param line       Начальная координата линия.
+     * @param column     Начальная координата столбец.
+     * @param toLine     Координата для перемещения по линии.
+     * @param toColumn   Координата для перемещения по столбцу.
+     * @return разрешено ли перемещение.
+     */
     public abstract boolean canMoveToPosition(ChessBoard chessBoard, int line, int column, int toLine, int toColumn);
-
-    public String getSymbol() {
-        return this.pieceType.getSymbol();
-    }
-
-    public String getColorLikeString() {
-        return this.color.getName();
-    }
 
     public void doFirstMove() {
         if (this.hasFirstMove) {

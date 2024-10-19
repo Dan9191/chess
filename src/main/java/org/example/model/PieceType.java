@@ -1,5 +1,8 @@
 package org.example.model;
 
+/**
+ * Тип фигур.
+ */
 public enum PieceType {
     HORSE("H"),
     BISHOP("B"),

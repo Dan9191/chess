@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.Scanner;
 
+import static org.example.model.Color.BLACK;
 import static org.example.model.Color.WHITE;
 
 public class Main {
@@ -16,13 +17,12 @@ public class Main {
                'replay' - для перезапуска игры
                'castling0' или 'castling7' - для рокировки по соответствующей линии
                'move 1 1 2 3' - для передвижения фигуры с позиции 1 1 на 2 3(поле это двумерный массив от 0 до 7)
-               Проверьте могут ли фигуры ходить друг сквозь друга, корректно ли съедают друг друга, можно ли поставить шах и сделать рокировку?""");
+               'destroyed' - список уничтоженных фигур
+               'info 1 1' - информация о фигуре на указанной клетке
+               'give up' - сдаться текущему игроку
+               """);
         System.out.println();
         board.printBoard();
-//        int line99 = Integer.parseInt(scanner.nextLine());
-//        int column99 = Integer.parseInt(scanner.nextLine());
-//        System.out.println(board.checkPosition(line99, column99).toString());
-//        String s1 = scanner.nextLine();
 
         while (true) {
             String s = scanner.nextLine();
@@ -32,6 +32,9 @@ public class Main {
                 System.out.println("Заново");
                 board = buildBoard();
                 board.printBoard();
+            } else if (s.equals("give up'")) {
+                System.out.println("Поздравляем! победил игрок : "
+                        + (board.nowPlayerColor().equals(WHITE) ? BLACK : WHITE));
             } else {
                 if (s.equals("castling0")) {
                     if (board.castling0()) {

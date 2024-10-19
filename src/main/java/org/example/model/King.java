@@ -10,27 +10,36 @@ import static org.example.util.Constants.IS_BLACK_PAWN;
 import static org.example.util.Constants.IS_PAWN_OR_KING;
 import static org.example.util.Constants.IS_WHITE_PAWN;
 
-public class
-King extends ChessPiece {
+/**
+ * Король.
+ */
+public class King extends ChessPiece {
 
     public King(Color color) {
         super(color, PieceType.KING);
     }
 
+    /**
+     * Список фигур, которые могут срубить короля по вертикали и горизонтали.
+     */
     private final List<PieceType> VERTICAL_AND_HORIZONTAL_PIECES =
             List.of(PieceType.ROOK, PieceType.QUEEN, PieceType.KING);
+
+    /**
+     * Список фигур, которые могут срубить короля по диагонали.
+     */
     private final List<PieceType> DIAGONALLY_PIECES =
             List.of(PieceType.BISHOP, PieceType.QUEEN, PieceType.KING, PieceType.PAWN);
 
     /**
      * Можно ли сходить.
      *
-     * @param chessBoard шахматная доска.
-     * @param line       начальная координата линия.
-     * @param column     начальная координата столбец.
-     * @param toLine     координата для перемещения по линии.
-     * @param toColumn   координата для перемещения по столбцу.
-     * @return Можно ли сходить.
+     * @param chessBoard Шахматная доска.
+     * @param line       Начальная координата линия.
+     * @param column     Начальная координата столбец.
+     * @param toLine     Координата для перемещения по линии.
+     * @param toColumn   Координата для перемещения по столбцу.
+     * @return разрешено ли перемещение.
      */
     @Override
     public boolean canMoveToPosition(ChessBoard chessBoard, int line, int column, int toLine, int toColumn) {
@@ -77,6 +86,14 @@ King extends ChessPiece {
         return enemy;
     }
 
+    /**
+     * Находится ли король под атакой.
+     *
+     * @param board  Шахматная доска.
+     * @param line   Координата линии.
+     * @param column Координата столбца.
+     * @return Находится ли король под атакой.
+     */
     public boolean isUnderAttack(ChessBoard board, int line, int column) {
         List<ChessPiece> enemy = new ArrayList<>();
         enemy.addAll(getEnemyHorse(board, line, column));

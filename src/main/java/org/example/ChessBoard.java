@@ -15,6 +15,9 @@ import static org.example.util.Constants.BLACK_KING_CAN_DO_RIGHT_CASTLING;
 import static org.example.util.Constants.WHITE_KING_CAN_DO_LEFT_CASTLING;
 import static org.example.util.Constants.WHITE_KING_CAN_DO_RIGHT_CASTLING;
 
+/**
+ * Шахматная доска.
+ */
 public class ChessBoard {
     private ChessPiece[][] board = new ChessPiece[8][8]; // creating a field for game
     private Color nowPlayer;
@@ -132,6 +135,11 @@ public class ChessBoard {
         return pos >= 0 && pos <= 7;
     }
 
+    /**
+     * Для текущего игрока проверятся условие рокировки, после чего производится или не производится рокировка.
+     *
+     * @return производится рокировка.
+     */
     public boolean castling0() {
         if (nowPlayer.equals(WHITE)) {
             if (WHITE_KING_CAN_DO_LEFT_CASTLING.test(this)) {
@@ -184,6 +192,9 @@ public class ChessBoard {
         }
     }
 
+    /**
+     * Добавить фигуру в список удаленных.
+     */
     public void addDestroyedPiece(ChessPiece piece) {
         if (piece.getPieceType().equals(KING)) {
             Color winnerColor = piece.getColor().equals(WHITE) ? BLACK : WHITE;
@@ -193,6 +204,9 @@ public class ChessBoard {
         this.destroyedPieces.add(piece);
     }
 
+    /**
+     * Вывод информации об уничтоженных фигурах.
+     */
     public String infoDestroyedPiece() {
         return this.destroyedPieces.toString();
     }
@@ -210,6 +224,9 @@ public class ChessBoard {
         }
     }
 
+    /**
+     * Проверка текущего короля на шах.
+     */
     public List<ChessPiece> checkKing() {
         King currentKing = null;
         int line = 0;
